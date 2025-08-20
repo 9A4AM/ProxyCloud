@@ -9,123 +9,147 @@ import 'error_snackbar.dart';
 class ServerSelector extends StatelessWidget {
   const ServerSelector({Key? key}) : super(key: key);
 
+  // Proxy mode switch removed as requested
+
   @override
   Widget build(BuildContext context) {
-    return Consumer<V2RayProvider>(builder: (context, provider, _) {
-      final selectedConfig = provider.selectedConfig;
-      final configs = provider.configs;
-      final isConnecting = provider.isConnecting;
-      final isLoadingServers = provider.isLoadingServers;
+    return Consumer<V2RayProvider>(
+      builder: (context, provider, _) {
+        final selectedConfig = provider.selectedConfig;
+        final configs = provider.configs;
+        final isConnecting = provider.isConnecting;
+        final isLoadingServers = provider.isLoadingServers;
 
-      if (isLoadingServers) {
-        return const _LoadingServerCard();
-      }
+        if (isLoadingServers) {
+          return const _LoadingServerCard();
+        }
 
-      if (configs.isEmpty) {
-        return const _EmptyServerCard();
-      }
+        if (configs.isEmpty) {
+          return const _EmptyServerCard();
+        }
 
-      return Card(
-        margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    'Select Server',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
+        return Card(
+          margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Select Server',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                  // Refresh Servers icon removed
-                ],
-              ),
-              const SizedBox(height: 12),
-              GestureDetector(
-                onTap: isConnecting
-                    ? null
-                    : () {
-                        // Check if already connected to VPN
-                        if (provider.activeConfig != null) {
-                          // Show popup to inform user to disconnect first
-                          showDialog(
-                            context: context,
-                            builder: (context) => AlertDialog(
-                              title: const Text('Connection Active'),
-                              content: const Text('Please disconnect from VPN before selecting a different server.'),
-                              actions: [
-                                TextButton(
-                                  onPressed: () => Navigator.pop(context),
-                                  child: const Text('OK'),
-                                ),
-                              ],
+                  ],
+                ),
+                const SizedBox(height: 12),
+                GestureDetector(
+                  onTap:
+                      isConnecting
+                          ? null
+                          : () {
+                            // Check if already connected to VPN
+                            if (provider.activeConfig != null) {
+                              // Show popup to inform user to disconnect first
+                              showDialog(
+                                context: context,
+                                builder:
+                                    (context) => AlertDialog(
+                                      title: const Text('Connection Active'),
+                                      content: const Text(
+                                        'Please disconnect from VPN before selecting a different server.',
+                                      ),
+                                      actions: [
+                                        TextButton(
+                                          onPressed:
+                                              () => Navigator.pop(context),
+                                          child: const Text('OK'),
+                                        ),
+                                      ],
+                                    ),
+                              );
+                            } else {
+                              // Not connected, show server selector as full page
+                              showServerSelectionScreen(
+                                context: context,
+                                configs: configs,
+                                selectedConfig: selectedConfig,
+                                isConnecting: isConnecting,
+                                onConfigSelected: (config) async {
+                                  await provider.selectConfig(config);
+                                },
+                              );
+                            }
+                          },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppTheme.secondaryDark,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: AppTheme.cardDark),
+                    ),
+                    child: Row(
+                      children: [
+                        if (selectedConfig != null) ...[
+                          Container(
+                            width: 12,
+                            height: 12,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: _getServerStatusColor(
+                                selectedConfig,
+                                provider,
+                              ),
                             ),
-                          );
-                        } else {
-                          // Not connected, show server selector as full page
-                          showServerSelectionScreen(
-                            context: context,
-                            configs: configs,
-                            selectedConfig: selectedConfig,
-                            isConnecting: isConnecting,
-                            onConfigSelected: (config) async {
-                              await provider.selectConfig(config);
-                            },
-                          );
-                        }
-                      },
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                  decoration: BoxDecoration(
-                    color: AppTheme.secondaryDark,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: AppTheme.cardDark),
-                  ),
-                  child: Row(
-                    children: [
-                      if (selectedConfig != null) ...[  
-                        Container(
-                          width: 12,
-                          height: 12,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: _getServerStatusColor(selectedConfig, provider),
                           ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Text(
-                            selectedConfig.remark,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(fontSize: 16),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              selectedConfig.remark,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(fontSize: 16),
+                            ),
                           ),
-                        ),
-                        // Removed server delay icon as requested
-                      ] else ...[  
-                        const Expanded(
-                          child: Text(
-                            'Select a server',
-                            style: TextStyle(fontSize: 16, color: Colors.grey),
+                          // Removed server delay icon as requested
+                        ] else ...[
+                          const Expanded(
+                            child: Text(
+                              'Select a server',
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.grey,
+                              ),
+                            ),
                           ),
+                        ],
+                        const Icon(
+                          Icons.arrow_drop_down,
+                          color: AppTheme.primaryGreen,
                         ),
                       ],
-                      const Icon(Icons.arrow_drop_down, color: AppTheme.primaryGreen),
-                    ],
+                    ),
                   ),
                 ),
-              ),
-              // Server and config type information removed as requested
-            ],
+                const SizedBox(height: 12),
+                // Proxy Mode Switch removed as requested
+                // Server and config type information removed as requested
+              ],
+            ),
           ),
-        ),
-      );
-    });
+        );
+      },
+    );
   }
 
   Color _getServerStatusColor(V2RayConfig config, V2RayProvider provider) {
@@ -221,17 +245,27 @@ class _EmptyServerCard extends StatelessWidget {
               const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: () async {
-                  final provider = Provider.of<V2RayProvider>(context, listen: false);
+                  final provider = Provider.of<V2RayProvider>(
+                    context,
+                    listen: false,
+                  );
                   try {
-                    await provider.fetchServers();
-                    
+                    // Since we no longer have default servers, we'll show a message
+                    ErrorSnackbar.show(
+                      context,
+                      'Please add a subscription to get servers',
+                    );
+
                     // Check if there was an error
                     if (provider.errorMessage.isNotEmpty) {
                       ErrorSnackbar.show(context, provider.errorMessage);
                       provider.clearError();
                     }
                   } catch (e) {
-                    ErrorSnackbar.show(context, 'Error refreshing servers: ${e.toString()}');
+                    ErrorSnackbar.show(
+                      context,
+                      'Error refreshing servers: ${e.toString()}',
+                    );
                   }
                 },
                 child: const Text('Refresh'),

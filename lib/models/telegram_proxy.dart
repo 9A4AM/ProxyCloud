@@ -38,7 +38,7 @@ class TelegramProxy {
       }
       return 0;
     }
-    
+
     return TelegramProxy(
       host: json['host'] ?? '',
       port: toInt(json['port']),
@@ -69,7 +69,7 @@ class TelegramProxy {
   String get telegramUrl {
     return 'tg://proxy?server=$host&port=$port&secret=$secret';
   }
-  
+
   String get telegramHttpsUrl {
     return 'https://t.me/proxy?server=$host&port=$port&secret=$secret';
   }

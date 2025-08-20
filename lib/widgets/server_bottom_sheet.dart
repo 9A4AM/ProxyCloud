@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/v2ray_config.dart';
 import '../providers/v2ray_provider.dart';
+import '../services/v2ray_service.dart';
 import '../theme/app_theme.dart';
 
-class ServerBottomSheet extends StatelessWidget {
+class ServerBottomSheet extends StatefulWidget {
   final List<V2RayConfig> configs;
   final V2RayConfig? selectedConfig;
   final bool isConnecting;
@@ -17,8 +18,52 @@ class ServerBottomSheet extends StatelessWidget {
     required this.isConnecting,
     required this.onConfigSelected,
   }) : super(key: key);
-  
-  // Removed ping indicator method as requested
+
+  @override
+  State<ServerBottomSheet> createState() => _ServerBottomSheetState();
+}
+
+class _ServerBottomSheetState extends State<ServerBottomSheet> {
+  final Map<String, int?> _pings = {};
+  final Map<String, bool> _loadingPings = {};
+  final V2RayService _v2rayService = V2RayService();
+
+  @override
+  void initState() {
+    super.initState();
+    _loadAllPings();
+  }
+
+  Future<void> _loadAllPings() async {
+    for (final config in widget.configs) {
+      _loadPingForConfig(config);
+    }
+  }
+
+  Future<void> _loadPingForConfig(V2RayConfig config) async {
+    if (mounted) {
+      setState(() {
+        _loadingPings[config.id] = true;
+      });
+    }
+
+    try {
+      final delay = await _v2rayService.getServerDelay(config);
+      if (mounted) {
+        setState(() {
+          _pings[config.id] = delay;
+          _loadingPings[config.id] = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _pings[config.id] = null;
+          _loadingPings[config.id] = false;
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,10 +96,7 @@ class ServerBottomSheet extends StatelessWidget {
               children: [
                 const Text(
                   'Select Server',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 Row(
                   children: [
@@ -73,64 +115,120 @@ class ServerBottomSheet extends StatelessWidget {
           Flexible(
             child: ListView.builder(
               shrinkWrap: true,
-              itemCount: configs.length,
+              itemCount: widget.configs.length,
               padding: const EdgeInsets.symmetric(horizontal: 12),
               itemBuilder: (context, index) {
-                final config = configs[index];
-                final isSelected = selectedConfig?.id == config.id;
-                
+                final config = widget.configs[index];
+                final isSelected = widget.selectedConfig?.id == config.id;
+                final isLoadingPing = _loadingPings[config.id] ?? false;
+                final ping = _pings[config.id];
+
                 return ListTile(
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 4,
+                  ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  tileColor: isSelected ? AppTheme.primaryGreen.withOpacity(0.1) : null,
+                  tileColor:
+                      isSelected
+                          ? AppTheme.primaryGreen.withOpacity(0.1)
+                          : null,
                   leading: Container(
                     width: 12,
                     height: 12,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: isSelected ? AppTheme.primaryGreen : AppTheme.textGrey,
+                      color:
+                          isSelected
+                              ? AppTheme.primaryGreen
+                              : AppTheme.textGrey,
                     ),
                   ),
-                  title: Text(
-                    config.remark,
-                    style: TextStyle(
-                      fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                    ),
+                  title: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          config.remark,
+                          style: TextStyle(
+                            fontWeight:
+                                isSelected
+                                    ? FontWeight.bold
+                                    : FontWeight.normal,
+                          ),
+                        ),
+                      ),
+                      if (isLoadingPing)
+                        const SizedBox(
+                          width: 12,
+                          height: 12,
+                          child: CircularProgressIndicator(strokeWidth: 1.5),
+                        )
+                      else if (ping != null)
+                        Text(
+                          '${ping}ms',
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: Colors.green,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                    ],
                   ),
-                  subtitle: Text(
-                    '${config.address}:${config.port} (${config.configType})',
-                    style: const TextStyle(fontSize: 12),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '${config.address}:${config.port} (${config.configType})',
+                        style: const TextStyle(fontSize: 12),
+                      ),
+                      Text(
+                        'وضعیت: ${config.isConnected ? "متصل" : "قطع"}',
+                        style: TextStyle(
+                          color: config.isConnected ? Colors.green : Colors.red,
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
                   ),
-                  onTap: isConnecting
-                      ? null
-                      : () async {
-                          // Get the provider to check connection status
-                          final provider = Provider.of<V2RayProvider>(context, listen: false);
-                          
-                          // Check if already connected to VPN
-                          if (provider.activeConfig != null) {
-                            // Show popup to inform user to disconnect first
-                            showDialog(
-                              context: context,
-                              builder: (context) => AlertDialog(
-                                title: const Text('Connection Active'),
-                                content: const Text('Please disconnect from VPN before selecting a different server.'),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () => Navigator.pop(context),
-                                    child: const Text('OK'),
-                                  ),
-                                ],
-                              ),
+                  onTap:
+                      widget.isConnecting
+                          ? null
+                          : () async {
+                            // Get the provider to check connection status
+                            final provider = Provider.of<V2RayProvider>(
+                              context,
+                              listen: false,
                             );
-                          } else {
-                            // Not connected, proceed with selection
-                            await onConfigSelected(config);
-                            Navigator.pop(context);
-                          }
-                        },
+
+                            // Check if already connected to VPN
+                            if (provider.activeConfig != null) {
+                              // Show popup to inform user to disconnect first
+                              showDialog(
+                                context: context,
+                                builder:
+                                    (context) => AlertDialog(
+                                      title: const Text('Connection Active'),
+                                      content: const Text(
+                                        'Please disconnect from VPN before selecting a different server.',
+                                      ),
+                                      actions: [
+                                        TextButton(
+                                          onPressed:
+                                              () => Navigator.pop(context),
+                                          child: const Text('OK'),
+                                        ),
+                                      ],
+                                    ),
+                              );
+                            } else {
+                              // Not connected, proceed with selection
+                              await widget.onConfigSelected(config);
+                              Navigator.pop(context);
+                            }
+                          },
                   // Removed onLongPress handler for server pinging as requested
                 );
               },
@@ -153,42 +251,47 @@ void showServerSelector({
 }) {
   // Get the provider to check connection status
   final provider = Provider.of<V2RayProvider>(context, listen: false);
-  
+
   // Check if already connected to VPN
   if (provider.activeConfig != null) {
     // Show popup to inform user to disconnect first
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Connection Active'),
-        content: const Text('Please disconnect from VPN before selecting a different server.'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('OK'),
+      builder:
+          (context) => AlertDialog(
+            title: const Text('Connection Active'),
+            content: const Text(
+              'Please disconnect from VPN before selecting a different server.',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('OK'),
+              ),
+            ],
           ),
-        ],
-      ),
     );
     return; // Don't show the bottom sheet
   }
-  
+
   // Not connected, show server selector
   showModalBottomSheet(
     context: context,
     backgroundColor: Colors.transparent,
     isScrollControlled: true,
-    builder: (context) => DraggableScrollableSheet(
-      initialChildSize: 0.6,
-      minChildSize: 0.4,
-      maxChildSize: 0.9,
-      expand: false,
-      builder: (context, scrollController) => ServerBottomSheet(
-        configs: configs,
-        selectedConfig: selectedConfig,
-        isConnecting: isConnecting,
-        onConfigSelected: onConfigSelected,
-      ),
-    ),
+    builder:
+        (context) => DraggableScrollableSheet(
+          initialChildSize: 0.6,
+          minChildSize: 0.4,
+          maxChildSize: 0.9,
+          expand: false,
+          builder:
+              (context, scrollController) => ServerBottomSheet(
+                configs: configs,
+                selectedConfig: selectedConfig,
+                isConnecting: isConnecting,
+                onConfigSelected: onConfigSelected,
+              ),
+        ),
   );
 }

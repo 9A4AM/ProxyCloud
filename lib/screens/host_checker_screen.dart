@@ -15,7 +15,7 @@ class _HostCheckerScreenState extends State<HostCheckerScreen> {
   bool _isLoading = false;
   String? _errorMessage;
   Map<String, dynamic>? _result;
-  
+
   // List of default URLs for quick selection
   final List<String> _defaultUrls = [
     'https://www.google.com',
@@ -27,9 +27,9 @@ class _HostCheckerScreenState extends State<HostCheckerScreen> {
     'https://www.tiktok.com',
     'https://www.instagram.com',
     'https://www.facebook.com',
-    'https://telegram.org'
+    'https://telegram.org',
   ];
-  
+
   // Map of URL display names
   final Map<String, String> _urlDisplayNames = {
     'https://www.google.com': 'Google',
@@ -41,7 +41,7 @@ class _HostCheckerScreenState extends State<HostCheckerScreen> {
     'https://www.tiktok.com': 'TikTok',
     'https://www.instagram.com': 'Instagram',
     'https://www.facebook.com': 'Facebook',
-    'https://telegram.org': 'Telegram'
+    'https://telegram.org': 'Telegram',
   };
 
   @override
@@ -52,7 +52,7 @@ class _HostCheckerScreenState extends State<HostCheckerScreen> {
 
   Future<void> _checkHost() async {
     final url = _urlController.text.trim();
-    
+
     if (url.isEmpty) {
       setState(() {
         _errorMessage = 'Please enter a URL';
@@ -76,14 +76,16 @@ class _HostCheckerScreenState extends State<HostCheckerScreen> {
 
     try {
       final stopwatch = Stopwatch()..start();
-      
-      final response = await http.get(Uri.parse(url)).timeout(
-        const Duration(seconds: 10),
-        onTimeout: () {
-          throw TimeoutException('Request timed out after 10 seconds');
-        },
-      );
-      
+
+      final response = await http
+          .get(Uri.parse(url))
+          .timeout(
+            const Duration(seconds: 10),
+            onTimeout: () {
+              throw TimeoutException('Request timed out after 10 seconds');
+            },
+          );
+
       stopwatch.stop();
       final responseTime = stopwatch.elapsedMilliseconds;
 
@@ -107,7 +109,8 @@ class _HostCheckerScreenState extends State<HostCheckerScreen> {
           'isSuccess': false,
           'headers': <String, String>{},
           'contentLength': 0,
-          'errorMessage': 'Could not connect to host. Please check your internet connection or the URL.',
+          'errorMessage':
+              'Could not connect to host. Please check your internet connection or the URL.',
         };
       });
     }
@@ -131,9 +134,7 @@ class _HostCheckerScreenState extends State<HostCheckerScreen> {
             const SizedBox(height: 24),
             _buildCheckButton(),
             const SizedBox(height: 24),
-            Expanded(
-              child: _buildResultSection(),
-            ),
+            Expanded(child: _buildResultSection()),
           ],
         ),
       ),
@@ -146,7 +147,9 @@ class _HostCheckerScreenState extends State<HostCheckerScreen> {
         Card(
           color: AppTheme.cardDark,
           elevation: 4,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
             child: Row(
@@ -159,16 +162,23 @@ class _HostCheckerScreenState extends State<HostCheckerScreen> {
                       hintText: 'Enter URL',
                       hintStyle: TextStyle(color: Colors.grey[400]),
                       border: InputBorder.none,
-                      prefixIcon: const Icon(Icons.link, color: AppTheme.primaryGreen),
-                      suffixIcon: _urlController.text.isNotEmpty
-                          ? IconButton(
-                              icon: const Icon(Icons.clear, color: Colors.grey),
-                              onPressed: () {
-                                _urlController.clear();
-                                setState(() {});
-                              },
-                            )
-                          : null,
+                      prefixIcon: const Icon(
+                        Icons.link,
+                        color: AppTheme.primaryGreen,
+                      ),
+                      suffixIcon:
+                          _urlController.text.isNotEmpty
+                              ? IconButton(
+                                icon: const Icon(
+                                  Icons.clear,
+                                  color: Colors.grey,
+                                ),
+                                onPressed: () {
+                                  _urlController.clear();
+                                  setState(() {});
+                                },
+                              )
+                              : null,
                     ),
                     onChanged: (_) => setState(() {}),
                     keyboardType: TextInputType.url,
@@ -177,7 +187,10 @@ class _HostCheckerScreenState extends State<HostCheckerScreen> {
                   ),
                 ),
                 PopupMenuButton<String>(
-                  icon: const Icon(Icons.arrow_drop_down, color: AppTheme.primaryGreen),
+                  icon: const Icon(
+                    Icons.arrow_drop_down,
+                    color: AppTheme.primaryGreen,
+                  ),
                   tooltip: 'Select a default URL',
                   onSelected: (String url) {
                     setState(() {
@@ -201,23 +214,24 @@ class _HostCheckerScreenState extends State<HostCheckerScreen> {
         Wrap(
           spacing: 8,
           runSpacing: 8,
-          children: _defaultUrls.take(5).map((url) {
-            return InkWell(
-              onTap: () {
-                setState(() {
-                  _urlController.text = url;
-                });
-              },
-              child: Chip(
-                backgroundColor: AppTheme.cardDark,
-                label: Text(
-                  _urlDisplayNames[url] ?? url,
-                  style: const TextStyle(color: Colors.white, fontSize: 12),
-                ),
-                padding: const EdgeInsets.symmetric(horizontal: 4),
-              ),
-            );
-          }).toList(),
+          children:
+              _defaultUrls.take(5).map((url) {
+                return InkWell(
+                  onTap: () {
+                    setState(() {
+                      _urlController.text = url;
+                    });
+                  },
+                  child: Chip(
+                    backgroundColor: AppTheme.cardDark,
+                    label: Text(
+                      _urlDisplayNames[url] ?? url,
+                      style: const TextStyle(color: Colors.white, fontSize: 12),
+                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 4),
+                  ),
+                );
+              }).toList(),
         ),
       ],
     );
@@ -233,19 +247,20 @@ class _HostCheckerScreenState extends State<HostCheckerScreen> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         disabledBackgroundColor: AppTheme.primaryGreen.withOpacity(0.5),
       ),
-      child: _isLoading
-          ? const SizedBox(
-              height: 20,
-              width: 20,
-              child: CircularProgressIndicator(
-                strokeWidth: 2,
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+      child:
+          _isLoading
+              ? const SizedBox(
+                height: 20,
+                width: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                ),
+              )
+              : const Text(
+                'Check Host',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
-            )
-          : const Text(
-              'Check Host',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
     );
   }
 
@@ -257,10 +272,7 @@ class _HostCheckerScreenState extends State<HostCheckerScreen> {
           children: [
             CircularProgressIndicator(),
             SizedBox(height: 16),
-            Text(
-              'Checking host...',
-              style: TextStyle(color: Colors.white70),
-            ),
+            Text('Checking host...', style: TextStyle(color: Colors.white70)),
           ],
         ),
       );
@@ -271,11 +283,7 @@ class _HostCheckerScreenState extends State<HostCheckerScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(
-              Icons.error_outline,
-              color: Colors.red,
-              size: 48,
-            ),
+            const Icon(Icons.error_outline, color: Colors.red, size: 48),
             const SizedBox(height: 16),
             Text(
               'Error',
@@ -301,11 +309,7 @@ class _HostCheckerScreenState extends State<HostCheckerScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              Icons.public,
-              color: Colors.grey[400],
-              size: 64,
-            ),
+            Icon(Icons.public, color: Colors.grey[400], size: 64),
             const SizedBox(height: 16),
             Text(
               'Enter a URL and click "Check Host"',
@@ -358,7 +362,10 @@ class _HostCheckerScreenState extends State<HostCheckerScreen> {
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: isSuccess ? Colors.green.withOpacity(0.1) : Colors.red.withOpacity(0.1),
+                    color:
+                        isSuccess
+                            ? Colors.green.withOpacity(0.1)
+                            : Colors.red.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Icon(
@@ -381,18 +388,19 @@ class _HostCheckerScreenState extends State<HostCheckerScreen> {
                         ),
                       ),
                       const SizedBox(height: 4),
-                      if (statusCode > 0) Text(
-                        'Status Code: $statusCode',
-                        style: const TextStyle(color: Colors.white70),
-                      ),
-                      if (responseTime > 0) ...[  
+                      if (statusCode > 0)
+                        Text(
+                          'Status Code: $statusCode',
+                          style: const TextStyle(color: Colors.white70),
+                        ),
+                      if (responseTime > 0) ...[
                         const SizedBox(height: 4),
                         Text(
                           'Response Time: ${responseTime}ms',
                           style: const TextStyle(color: Colors.white70),
                         ),
                       ],
-                      if (errorMessage != null) ...[  
+                      if (errorMessage != null) ...[
                         const SizedBox(height: 4),
                         Text(
                           errorMessage,
@@ -435,7 +443,7 @@ class _HostCheckerScreenState extends State<HostCheckerScreen> {
             _buildInfoRow('URL', _urlController.text),
             if (contentLength != null && contentLength > 0)
               _buildInfoRow('Content Length', '$contentLength bytes'),
-            if (isSuccess) ...[  
+            if (isSuccess) ...[
               const SizedBox(height: 8),
               const Text(
                 'Headers and cookies information hidden for security reasons',
@@ -445,7 +453,7 @@ class _HostCheckerScreenState extends State<HostCheckerScreen> {
                   color: Colors.white70,
                 ),
               ),
-            ]
+            ],
           ],
         ),
       ),

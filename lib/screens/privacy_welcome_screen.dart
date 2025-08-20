@@ -34,7 +34,7 @@ class _PrivacyWelcomeScreenState extends State<PrivacyWelcomeScreen> {
       );
       return;
     }
-    
+
     if (_currentPage < _totalPages - 1) {
       _pageController.nextPage(
         duration: const Duration(milliseconds: 300),
@@ -49,7 +49,7 @@ class _PrivacyWelcomeScreenState extends State<PrivacyWelcomeScreen> {
     if (_acceptedPrivacy) {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setBool('privacy_accepted', true);
-      
+
       if (mounted) {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) => const MainNavigationScreen()),
@@ -85,7 +85,10 @@ class _PrivacyWelcomeScreenState extends State<PrivacyWelcomeScreen> {
               return Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0,
+                      vertical: 8.0,
+                    ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
@@ -116,7 +119,10 @@ class _PrivacyWelcomeScreenState extends State<PrivacyWelcomeScreen> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24.0,
+                      vertical: 16.0,
+                    ),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -131,9 +137,10 @@ class _PrivacyWelcomeScreenState extends State<PrivacyWelcomeScreen> {
                               height: 10,
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                color: _currentPage == index
-                                    ? AppTheme.primaryGreen
-                                    : Colors.grey.withOpacity(0.5),
+                                color:
+                                    _currentPage == index
+                                        ? AppTheme.primaryGreen
+                                        : Colors.grey.withOpacity(0.5),
                               ),
                             ),
                           ),
@@ -143,20 +150,23 @@ class _PrivacyWelcomeScreenState extends State<PrivacyWelcomeScreen> {
                         SizedBox(
                           width: double.infinity,
                           child: ElevatedButton(
-                            onPressed: _currentPage == 1 && !_acceptedPrivacy
-                                ? null
-                                : _nextPage,
+                            onPressed:
+                                _currentPage == 1 && !_acceptedPrivacy
+                                    ? null
+                                    : _nextPage,
                             style: ElevatedButton.styleFrom(
                               backgroundColor: AppTheme.primaryGreen,
                               padding: const EdgeInsets.symmetric(vertical: 14),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8),
                               ),
-                              disabledBackgroundColor:
-                                  AppTheme.primaryGreen.withOpacity(0.3),
+                              disabledBackgroundColor: AppTheme.primaryGreen
+                                  .withOpacity(0.3),
                             ),
                             child: Text(
-                              _currentPage == _totalPages - 1 ? 'Get Started' : 'Next',
+                              _currentPage == _totalPages - 1
+                                  ? 'Get Started'
+                                  : 'Next',
                               style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
@@ -185,11 +195,7 @@ class _PrivacyWelcomeScreenState extends State<PrivacyWelcomeScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(
-              Icons.security,
-              size: 100,
-              color: AppTheme.primaryGreen,
-            ),
+            const Icon(Icons.security, size: 100, color: AppTheme.primaryGreen),
             const SizedBox(height: 24),
             const Text(
               'Welcome to Proxy Cloud',
@@ -203,10 +209,7 @@ class _PrivacyWelcomeScreenState extends State<PrivacyWelcomeScreen> {
             const SizedBox(height: 16),
             const Text(
               'An open-source VPN that\'s fast, unlimited, secure, and completely free.',
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.white70,
-              ),
+              style: TextStyle(fontSize: 16, color: Colors.white70),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 24),
@@ -242,10 +245,7 @@ class _PrivacyWelcomeScreenState extends State<PrivacyWelcomeScreen> {
             const SizedBox(height: 16),
             const Text(
               'We don\'t track, store, or share your data. Your online activity remains private and secure.',
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.white70,
-              ),
+              style: TextStyle(fontSize: 16, color: Colors.white70),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 24),
@@ -273,14 +273,21 @@ class _PrivacyWelcomeScreenState extends State<PrivacyWelcomeScreen> {
                       InkWell(
                         onTap: () async {
                           // Open privacy policy link
-                          final Uri url = Uri.parse('https://github.com/code3-dev/ProxyCloud/blob/master/PRIVACY.md');
+                          final Uri url = Uri.parse(
+                            'https://github.com/code3-dev/ProxyCloud/blob/master/PRIVACY.md',
+                          );
                           try {
-                            await launchUrl(url, mode: LaunchMode.externalApplication);
+                            await launchUrl(
+                              url,
+                              mode: LaunchMode.externalApplication,
+                            );
                           } catch (e) {
                             if (mounted) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
-                                  content: Text('Could not open Privacy Policy'),
+                                  content: Text(
+                                    'Could not open Privacy Policy',
+                                  ),
                                   duration: Duration(seconds: 3),
                                 ),
                               );
@@ -289,7 +296,10 @@ class _PrivacyWelcomeScreenState extends State<PrivacyWelcomeScreen> {
                         },
                         child: const Text(
                           'privacy policy',
-                          style: TextStyle(color: AppTheme.primaryGreen, decoration: TextDecoration.underline),
+                          style: TextStyle(
+                            color: AppTheme.primaryGreen,
+                            decoration: TextDecoration.underline,
+                          ),
                         ),
                       ),
                       const Text(
@@ -299,14 +309,21 @@ class _PrivacyWelcomeScreenState extends State<PrivacyWelcomeScreen> {
                       InkWell(
                         onTap: () async {
                           // Open terms of service link
-                          final Uri url = Uri.parse('https://github.com/code3-dev/ProxyCloud/blob/master/TERMS.md');
+                          final Uri url = Uri.parse(
+                            'https://github.com/code3-dev/ProxyCloud/blob/master/TERMS.md',
+                          );
                           try {
-                            await launchUrl(url, mode: LaunchMode.externalApplication);
+                            await launchUrl(
+                              url,
+                              mode: LaunchMode.externalApplication,
+                            );
                           } catch (e) {
                             if (mounted) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
-                                  content: Text('Could not open Terms of Service'),
+                                  content: Text(
+                                    'Could not open Terms of Service',
+                                  ),
                                   duration: Duration(seconds: 3),
                                 ),
                               );
@@ -315,7 +332,10 @@ class _PrivacyWelcomeScreenState extends State<PrivacyWelcomeScreen> {
                         },
                         child: const Text(
                           'terms of service',
-                          style: TextStyle(color: AppTheme.primaryGreen, decoration: TextDecoration.underline),
+                          style: TextStyle(
+                            color: AppTheme.primaryGreen,
+                            decoration: TextDecoration.underline,
+                          ),
                         ),
                       ),
                     ],
@@ -337,11 +357,7 @@ class _PrivacyWelcomeScreenState extends State<PrivacyWelcomeScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(
-              Icons.speed,
-              size: 100,
-              color: AppTheme.primaryGreen,
-            ),
+            const Icon(Icons.speed, size: 100, color: AppTheme.primaryGreen),
             const SizedBox(height: 24),
             const Text(
               'No Limits',
@@ -355,10 +371,7 @@ class _PrivacyWelcomeScreenState extends State<PrivacyWelcomeScreen> {
             const SizedBox(height: 16),
             const Text(
               'Enjoy unlimited bandwidth and server switches. Browse, stream, and download without restrictions.',
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.white70,
-              ),
+              style: TextStyle(fontSize: 16, color: Colors.white70),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 24),
@@ -394,10 +407,7 @@ class _PrivacyWelcomeScreenState extends State<PrivacyWelcomeScreen> {
             const SizedBox(height: 16),
             const Text(
               'This app is completely free to use. No hidden fees, no subscriptions, no ads.',
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.white70,
-              ),
+              style: TextStyle(fontSize: 16, color: Colors.white70),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 24),

@@ -4,20 +4,20 @@ import '../services/telegram_proxy_service.dart';
 
 class TelegramProxyProvider extends ChangeNotifier {
   final TelegramProxyService _proxyService = TelegramProxyService();
-  
+
   List<TelegramProxy> _proxies = [];
   bool _isLoading = false;
   String _errorMessage = '';
-  
+
   List<TelegramProxy> get proxies => _proxies;
   bool get isLoading => _isLoading;
   String get errorMessage => _errorMessage;
-  
+
   Future<void> fetchProxies() async {
     _isLoading = true;
     _errorMessage = '';
     notifyListeners();
-    
+
     try {
       _proxies = await _proxyService.fetchProxies();
       _isLoading = false;
@@ -28,7 +28,7 @@ class TelegramProxyProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
-  
+
   void clearError() {
     _errorMessage = '';
     notifyListeners();

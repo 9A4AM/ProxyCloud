@@ -8,29 +8,29 @@ class AppTheme {
   static const Color primaryDarker = Color(0xFF0A0A0A);
   static const Color secondaryDark = Color(0xFF1E1E1E);
   static const Color cardDark = Color(0xFF252525);
-  
+
   // Accent colors
   static const Color accentGreen = Color(0xFF69F0AE);
   static const Color disconnectedRed = Color(0xFFFF5252);
   static const Color connectingYellow = Color(0xFFFFD740);
-  
+
   // Text colors
   static const Color textLight = Color(0xFFFFFFFF);
   static const Color textGrey = Color(0xFFAAAAAA);
-  
+
   // Gradients
   static const LinearGradient primaryGradient = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
     colors: [primaryGreen, Color(0xFF00E676)],
   );
-  
+
   static const LinearGradient darkGradient = LinearGradient(
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
     colors: [primaryDark, secondaryDark],
   );
-  
+
   // Theme data
   static ThemeData darkTheme() {
     return ThemeData.dark().copyWith(
@@ -57,9 +57,7 @@ class AppTheme {
       cardTheme: CardThemeData(
         color: cardDark,
         elevation: 4,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
@@ -76,9 +74,7 @@ class AppTheme {
           ),
         ),
       ),
-      textTheme: GoogleFonts.poppinsTextTheme(
-        ThemeData.dark().textTheme,
-      ),
+      textTheme: GoogleFonts.poppinsTextTheme(ThemeData.dark().textTheme),
       dividerTheme: const DividerThemeData(
         color: Color(0xFF323232),
         thickness: 1,

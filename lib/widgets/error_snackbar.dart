@@ -6,16 +6,10 @@ class ErrorSnackbar {
     final snackBar = SnackBar(
       content: Row(
         children: [
-          const Icon(
-            Icons.error_outline,
-            color: Colors.white,
-          ),
+          const Icon(Icons.error_outline, color: Colors.white),
           const SizedBox(width: 12),
           Expanded(
-            child: Text(
-              message,
-              style: const TextStyle(color: Colors.white),
-            ),
+            child: Text(message, style: const TextStyle(color: Colors.white)),
           ),
         ],
       ),

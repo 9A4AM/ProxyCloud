@@ -31,9 +31,11 @@ class _IpInfoScreenState extends State<IpInfoScreen> {
     });
 
     try {
-      final response = await Provider.of<V2RayProvider>(context, listen: false)
-          .v2rayService
-          .fetchIpInfo();
+      final response =
+          await Provider.of<V2RayProvider>(
+            context,
+            listen: false,
+          ).v2rayService.fetchIpInfo();
 
       if (response.success) {
         // Fetch the full details from the API
@@ -44,7 +46,8 @@ class _IpInfoScreenState extends State<IpInfoScreen> {
         });
       } else {
         setState(() {
-          _errorMessage = response.errorMessage ?? 'Failed to fetch IP information';
+          _errorMessage =
+              response.errorMessage ?? 'Failed to fetch IP information';
           _isLoading = false;
         });
       }
@@ -59,7 +62,7 @@ class _IpInfoScreenState extends State<IpInfoScreen> {
   Future<Map<String, dynamic>> _fetchFullIpDetails() async {
     try {
       final response = await http.get(Uri.parse('https://ipleak.net/json/'));
-      
+
       if (response.statusCode == 200) {
         return jsonDecode(response.body);
       } else {
@@ -92,9 +95,7 @@ class _IpInfoScreenState extends State<IpInfoScreen> {
 
   Widget _buildBody() {
     if (_isLoading) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
+      return const Center(child: CircularProgressIndicator());
     }
 
     if (_errorMessage != null) {
@@ -102,11 +103,7 @@ class _IpInfoScreenState extends State<IpInfoScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(
-              Icons.error_outline,
-              color: Colors.red,
-              size: 48,
-            ),
+            const Icon(Icons.error_outline, color: Colors.red, size: 48),
             const SizedBox(height: 16),
             Text(
               'Error',
@@ -128,7 +125,10 @@ class _IpInfoScreenState extends State<IpInfoScreen> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppTheme.primaryGreen,
                 foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 12,
+                ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
@@ -186,7 +186,10 @@ class _IpInfoScreenState extends State<IpInfoScreen> {
             ),
             const SizedBox(height: 16),
             _buildInfoRow('IP Address', _ipData!['ip'] ?? 'Unknown'),
-            _buildInfoRow('Location', '${_ipData!['country_name'] ?? 'Unknown'} - ${_ipData!['city_name'] ?? 'Unknown'}'),
+            _buildInfoRow(
+              'Location',
+              '${_ipData!['country_name'] ?? 'Unknown'} - ${_ipData!['city_name'] ?? 'Unknown'}',
+            ),
             _buildInfoRow('ISP', _ipData!['isp_name'] ?? 'Unknown'),
           ],
         ),
@@ -242,14 +245,32 @@ class _IpInfoScreenState extends State<IpInfoScreen> {
               ),
             ),
             const SizedBox(height: 16),
-            _buildInfoRow('Country', '${_ipData!['country_name'] ?? 'Unknown'} (${_ipData!['country_code'] ?? 'Unknown'})'),
-            _buildInfoRow('Region', '${_ipData!['region_name'] ?? 'Unknown'} (${_ipData!['region_code'] ?? 'Unknown'})'),
+            _buildInfoRow(
+              'Country',
+              '${_ipData!['country_name'] ?? 'Unknown'} (${_ipData!['country_code'] ?? 'Unknown'})',
+            ),
+            _buildInfoRow(
+              'Region',
+              '${_ipData!['region_name'] ?? 'Unknown'} (${_ipData!['region_code'] ?? 'Unknown'})',
+            ),
             _buildInfoRow('City', _ipData!['city_name'] ?? 'Unknown'),
-            _buildInfoRow('Continent', '${_ipData!['continent_name'] ?? 'Unknown'} (${_ipData!['continent_code'] ?? 'Unknown'})'),
-            _buildInfoRow('Postal Code', _ipData!['postal_code']?.toString() ?? 'Unknown'),
+            _buildInfoRow(
+              'Continent',
+              '${_ipData!['continent_name'] ?? 'Unknown'} (${_ipData!['continent_code'] ?? 'Unknown'})',
+            ),
+            _buildInfoRow(
+              'Postal Code',
+              _ipData!['postal_code']?.toString() ?? 'Unknown',
+            ),
             _buildInfoRow('Time Zone', _ipData!['time_zone'] ?? 'Unknown'),
-            _buildInfoRow('Coordinates', '${_ipData!['latitude']?.toString() ?? 'Unknown'}, ${_ipData!['longitude']?.toString() ?? 'Unknown'}'),
-            _buildInfoRow('Accuracy Radius', '${_ipData!['accuracy_radius']?.toString() ?? 'Unknown'} km'),
+            _buildInfoRow(
+              'Coordinates',
+              '${_ipData!['latitude']?.toString() ?? 'Unknown'}, ${_ipData!['longitude']?.toString() ?? 'Unknown'}',
+            ),
+            _buildInfoRow(
+              'Accuracy Radius',
+              '${_ipData!['accuracy_radius']?.toString() ?? 'Unknown'} km',
+            ),
           ],
         ),
       ),
@@ -276,7 +297,10 @@ class _IpInfoScreenState extends State<IpInfoScreen> {
             ),
             const SizedBox(height: 16),
             _buildInfoRow('ISP', _ipData!['isp_name'] ?? 'Unknown'),
-            _buildInfoRow('AS Number', _ipData!['as_number']?.toString() ?? 'Unknown'),
+            _buildInfoRow(
+              'AS Number',
+              _ipData!['as_number']?.toString() ?? 'Unknown',
+            ),
           ],
         ),
       ),

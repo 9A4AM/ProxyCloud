@@ -25,7 +25,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
     const StoreScreen(),
     const ToolsScreen(),
   ];
-  
+
   @override
   void initState() {
     super.initState();

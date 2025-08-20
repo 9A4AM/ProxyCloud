@@ -25,6 +25,18 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _urlController.text = ''; // Default to empty subscription URL
+
+    // Ping functionality removed
+
+    // Listen for connection state changes
+    final v2rayProvider = Provider.of<V2RayProvider>(context, listen: false);
+    v2rayProvider.addListener(_onProviderChanged);
+  }
+
+  void _onProviderChanged() {
+    // Check if the provider is connected and not connecting
+    final v2rayProvider = Provider.of<V2RayProvider>(context, listen: false);
+    // Ping functionality removed
   }
 
   @override
@@ -34,8 +46,10 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _showAddSubscriptionDialog(BuildContext context) async {
-    final TextEditingController _nameController = TextEditingController(text: 'New Subscription');
-    
+    final TextEditingController _nameController = TextEditingController(
+      text: 'New Subscription',
+    );
+
     showDialog(
       context: context,
       builder:
@@ -75,23 +89,27 @@ class _HomeScreenState extends State<HomeScreen> {
                   );
                   final url = _urlController.text.trim();
                   final name = _nameController.text.trim();
-                  
+
                   if (url.isEmpty) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Please enter a subscription URL')),
+                      const SnackBar(
+                        content: Text('Please enter a subscription URL'),
+                      ),
                     );
                     return;
                   }
-                  
+
                   if (name.isEmpty) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Please enter a subscription name')),
+                      const SnackBar(
+                        content: Text('Please enter a subscription name'),
+                      ),
                     );
                     return;
                   }
-                  
+
                   Navigator.pop(context);
-                  
+
                   // Show a loading snackbar
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
@@ -99,18 +117,20 @@ class _HomeScreenState extends State<HomeScreen> {
                       duration: Duration(seconds: 2),
                     ),
                   );
-                  
+
                   try {
                     // Add subscription with URL
                     await provider.addSubscription(name, url);
-                    
+
                     // Check if there was an error
                     if (provider.errorMessage.isNotEmpty) {
                       ErrorSnackbar.show(context, provider.errorMessage);
                       provider.clearError();
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Subscription added successfully')),
+                        const SnackBar(
+                          content: Text('Subscription added successfully'),
+                        ),
                       );
                     }
                   } catch (e) {
@@ -142,20 +162,24 @@ class _HomeScreenState extends State<HomeScreen> {
                   context,
                   listen: false,
                 );
-                
+
                 // Show loading indicator
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Updating all subscriptions...')),
+                  const SnackBar(
+                    content: Text('Updating all subscriptions...'),
+                  ),
                 );
-                
+
                 // Update all subscriptions instead of just fetching servers
                 await provider.updateAllSubscriptions();
                 provider.fetchNotificationStatus();
-                
+
                 // Show success message
                 if (provider.errorMessage.isEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('All subscriptions updated successfully')),
+                    const SnackBar(
+                      content: Text('All subscriptions updated successfully'),
+                    ),
                   );
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -171,7 +195,9 @@ class _HomeScreenState extends State<HomeScreen> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const SubscriptionManagementScreen()),
+                  MaterialPageRoute(
+                    builder: (context) => const SubscriptionManagementScreen(),
+                  ),
                 );
               },
               tooltip: 'Add Subscription',
@@ -203,10 +229,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          // Server selector
+                          // Server selector (now includes Proxy Mode Switch)
                           const ServerSelector(),
 
-                          const SizedBox(height: 40),
+                          const SizedBox(height: 20),
 
                           // Connection button
                           const ConnectionButton(),
@@ -239,7 +265,7 @@ class _HomeScreenState extends State<HomeScreen> {
       stream: Stream.periodic(const Duration(seconds: 1)),
       builder: (context, snapshot) {
         final ipInfo = v2rayService.ipInfo;
-        
+
         return Container(
           margin: const EdgeInsets.symmetric(horizontal: 20),
           padding: const EdgeInsets.all(16),
@@ -268,6 +294,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 v2rayService.getFormattedConnectedTime(),
               ),
               const Divider(height: 24),
+              // Server ping information removed
               if (v2rayService.isLoadingIpInfo)
                 _buildLoadingIpInfoRow()
               else if (ipInfo != null && ipInfo.success)
@@ -287,7 +314,12 @@ class _HomeScreenState extends State<HomeScreen> {
       },
     );
   }
-  
+
+  // Cached ping value and loading state
+  // Ping functionality removed
+
+  // Server ping row removed
+
   Widget _buildIpInfoRow(IpInfo ipInfo) {
     return Row(
       children: [
@@ -296,7 +328,10 @@ class _HomeScreenState extends State<HomeScreen> {
         Expanded(
           child: Text(
             '${ipInfo.country} - ${ipInfo.city}',
-            style: const TextStyle(fontWeight: FontWeight.bold, color: AppTheme.primaryGreen),
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              color: AppTheme.primaryGreen,
+            ),
             overflow: TextOverflow.ellipsis,
           ),
         ),
@@ -321,8 +356,12 @@ class _HomeScreenState extends State<HomeScreen> {
       ],
     );
   }
-  
-  Widget _buildIpErrorRow(String label, String errorMessage, VoidCallback onRetry) {
+
+  Widget _buildIpErrorRow(
+    String label,
+    String errorMessage,
+    VoidCallback onRetry,
+  ) {
     return Row(
       children: [
         const Icon(Icons.public, size: 18, color: AppTheme.textGrey),
@@ -352,13 +391,16 @@ class _HomeScreenState extends State<HomeScreen> {
       ],
     );
   }
-  
+
   Widget _buildLoadingIpInfoRow() {
     return Row(
       children: [
         const Icon(Icons.public, size: 18, color: AppTheme.textGrey),
         const SizedBox(width: 12),
-        const Text('IP Information', style: TextStyle(color: AppTheme.textGrey)),
+        const Text(
+          'IP Information',
+          style: TextStyle(color: AppTheme.textGrey),
+        ),
         const Spacer(),
         const Text(
           'Fetching...',
@@ -373,7 +415,9 @@ class _HomeScreenState extends State<HomeScreen> {
           height: 18,
           child: CircularProgressIndicator(
             strokeWidth: 2,
-            valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).colorScheme.primary),
+            valueColor: AlwaysStoppedAnimation<Color>(
+              Theme.of(context).colorScheme.primary,
+            ),
           ),
         ),
       ],

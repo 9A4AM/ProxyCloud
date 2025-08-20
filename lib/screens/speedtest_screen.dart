@@ -21,53 +21,56 @@ class _SpeedtestScreenState extends State<SpeedtestScreen> {
   }
 
   void _initWebView() {
-    _controller = WebViewController()
-      ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..setNavigationDelegate(
-        NavigationDelegate(
-          onProgress: (int progress) {
-            if (progress == 100) {
-              setState(() {
-                _isLoading = false;
-              });
-            }
-          },
-          onPageStarted: (String url) {
-            setState(() {
-              _isLoading = true;
-            });
-          },
-          onPageFinished: (String url) {
-            setState(() {
-              _isLoading = false;
-            });
-          },
-          onNavigationRequest: (NavigationRequest request) {
-            // Handle external links
-            if (request.url.startsWith('https://x.com/intent/post') ||
-                request.url.startsWith('https://www.facebook.com/dialog/') ||
-                request.url.contains('twitter.com') ||
-                request.url.contains('facebook.com') ||
-                request.url.contains('instagram.com') ||
-                request.url.contains('linkedin.com') ||
-                !request.url.contains('trevor.speedtestcustom.com')) {
-              _launchExternalUrl(request.url);
-              return NavigationDecision.prevent;
-            }
-            return NavigationDecision.navigate;
-          },
-        ),
-      )
-      ..loadRequest(Uri.parse('https://trevor.speedtestcustom.com/'));
+    _controller =
+        WebViewController()
+          ..setJavaScriptMode(JavaScriptMode.unrestricted)
+          ..setNavigationDelegate(
+            NavigationDelegate(
+              onProgress: (int progress) {
+                if (progress == 100) {
+                  setState(() {
+                    _isLoading = false;
+                  });
+                }
+              },
+              onPageStarted: (String url) {
+                setState(() {
+                  _isLoading = true;
+                });
+              },
+              onPageFinished: (String url) {
+                setState(() {
+                  _isLoading = false;
+                });
+              },
+              onNavigationRequest: (NavigationRequest request) {
+                // Handle external links
+                if (request.url.startsWith('https://x.com/intent/post') ||
+                    request.url.startsWith(
+                      'https://www.facebook.com/dialog/',
+                    ) ||
+                    request.url.contains('twitter.com') ||
+                    request.url.contains('facebook.com') ||
+                    request.url.contains('instagram.com') ||
+                    request.url.contains('linkedin.com') ||
+                    !request.url.contains('trevor.speedtestcustom.com')) {
+                  _launchExternalUrl(request.url);
+                  return NavigationDecision.prevent;
+                }
+                return NavigationDecision.navigate;
+              },
+            ),
+          )
+          ..loadRequest(Uri.parse('https://trevor.speedtestcustom.com/'));
   }
 
   Future<void> _launchExternalUrl(String url) async {
     final Uri uri = Uri.parse(url);
     if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Could not launch $url')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Could not launch $url')));
       }
     }
   }

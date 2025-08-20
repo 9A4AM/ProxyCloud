@@ -39,7 +39,10 @@ class _TelegramProxyScreenState extends State<TelegramProxyScreen> {
             IconButton(
               icon: const Icon(Icons.refresh),
               onPressed: () {
-                Provider.of<TelegramProxyProvider>(context, listen: false).fetchProxies();
+                Provider.of<TelegramProxyProvider>(
+                  context,
+                  listen: false,
+                ).fetchProxies();
               },
               tooltip: 'Refresh',
             ),
@@ -48,9 +51,7 @@ class _TelegramProxyScreenState extends State<TelegramProxyScreen> {
         body: Consumer<TelegramProxyProvider>(
           builder: (context, provider, _) {
             if (provider.isLoading) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
+              return const Center(child: CircularProgressIndicator());
             }
 
             if (provider.errorMessage.isNotEmpty) {
@@ -87,9 +88,7 @@ class _TelegramProxyScreenState extends State<TelegramProxyScreen> {
             }
 
             if (provider.proxies.isEmpty) {
-              return const Center(
-                child: Text('No proxies available'),
-              );
+              return const Center(child: Text('No proxies available'));
             }
 
             return ListView.builder(
@@ -132,43 +131,26 @@ class _TelegramProxyScreenState extends State<TelegramProxyScreen> {
                 ),
                 Text(
                   'Port: ${proxy.port}',
-                  style: const TextStyle(
-                    fontSize: 14,
-                    color: Colors.white70,
-                  ),
+                  style: const TextStyle(fontSize: 14, color: Colors.white70),
                 ),
               ],
             ),
             const SizedBox(height: 8),
             Row(
               children: [
-                Icon(
-                  Icons.public,
-                  size: 16,
-                  color: Colors.blue[300],
-                ),
+                Icon(Icons.public, size: 16, color: Colors.blue[300]),
                 const SizedBox(width: 4),
                 Text(
                   proxy.country,
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.blue[300],
-                  ),
+                  style: TextStyle(fontSize: 14, color: Colors.blue[300]),
                 ),
                 const SizedBox(width: 16),
-                Icon(
-                  Icons.business,
-                  size: 16,
-                  color: Colors.amber[300],
-                ),
+                Icon(Icons.business, size: 16, color: Colors.amber[300]),
                 const SizedBox(width: 4),
                 Expanded(
                   child: Text(
                     proxy.provider,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.amber[300],
-                    ),
+                    style: TextStyle(fontSize: 14, color: Colors.amber[300]),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
@@ -177,11 +159,7 @@ class _TelegramProxyScreenState extends State<TelegramProxyScreen> {
             const SizedBox(height: 8),
             Row(
               children: [
-                Icon(
-                  Icons.speed,
-                  size: 16,
-                  color: _getPingColor(proxy.ping),
-                ),
+                Icon(Icons.speed, size: 16, color: _getPingColor(proxy.ping)),
                 const SizedBox(width: 4),
                 Text(
                   '${proxy.ping} ms',
@@ -191,18 +169,11 @@ class _TelegramProxyScreenState extends State<TelegramProxyScreen> {
                   ),
                 ),
                 const SizedBox(width: 16),
-                const Icon(
-                  Icons.access_time,
-                  size: 16,
-                  color: Colors.grey,
-                ),
+                const Icon(Icons.access_time, size: 16, color: Colors.grey),
                 const SizedBox(width: 4),
                 Text(
                   'Uptime: ${proxy.uptime}%',
-                  style: const TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey,
-                  ),
+                  style: const TextStyle(fontSize: 14, color: Colors.grey),
                 ),
               ],
             ),
@@ -217,11 +188,18 @@ class _TelegramProxyScreenState extends State<TelegramProxyScreen> {
                         icon: const Icon(Icons.copy),
                         label: const Text('Copy Details'),
                         onPressed: () {
-                          Clipboard.setData(ClipboardData(
-                            text: 'Server: ${proxy.host}\nPort: ${proxy.port}\nSecret: ${proxy.secret}',
-                          ));
+                          Clipboard.setData(
+                            ClipboardData(
+                              text:
+                                  'Server: ${proxy.host}\nPort: ${proxy.port}\nSecret: ${proxy.secret}',
+                            ),
+                          );
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Proxy details copied to clipboard')),
+                            const SnackBar(
+                              content: Text(
+                                'Proxy details copied to clipboard',
+                              ),
+                            ),
                           );
                         },
                       ),
@@ -232,11 +210,15 @@ class _TelegramProxyScreenState extends State<TelegramProxyScreen> {
                         icon: const Icon(Icons.link),
                         label: const Text('Copy URL'),
                         onPressed: () {
-                          Clipboard.setData(ClipboardData(
-                            text: proxy.telegramHttpsUrl,
-                          ));
+                          Clipboard.setData(
+                            ClipboardData(text: proxy.telegramHttpsUrl),
+                          );
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Telegram Proxy URL copied to clipboard')),
+                            const SnackBar(
+                              content: Text(
+                                'Telegram Proxy URL copied to clipboard',
+                              ),
+                            ),
                           );
                         },
                       ),
@@ -255,12 +237,21 @@ class _TelegramProxyScreenState extends State<TelegramProxyScreen> {
                     try {
                       final uri = Uri.parse(url);
                       if (await canLaunchUrl(uri)) {
-                        await launchUrl(uri, mode: LaunchMode.externalApplication);
+                        await launchUrl(
+                          uri,
+                          mode: LaunchMode.externalApplication,
+                        );
                       } else {
-                        ErrorSnackbar.show(context, 'Could not launch Telegram. Please make sure Telegram is installed.');
+                        ErrorSnackbar.show(
+                          context,
+                          'Could not launch Telegram. Please make sure Telegram is installed.',
+                        );
                       }
                     } catch (e) {
-                      ErrorSnackbar.show(context, 'Error launching Telegram: $e');
+                      ErrorSnackbar.show(
+                        context,
+                        'Error launching Telegram: $e',
+                      );
                     }
                   },
                 ),

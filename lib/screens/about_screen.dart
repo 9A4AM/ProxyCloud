@@ -33,10 +33,7 @@ class AboutScreen extends StatelessWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
               ),
-              child: Image.asset(
-                'assets/images/logo.png',
-                fit: BoxFit.contain,
-              ),
+              child: Image.asset('assets/images/logo.png', fit: BoxFit.contain),
             ),
 
             const SizedBox(height: 20),
@@ -51,16 +48,20 @@ class AboutScreen extends StatelessWidget {
 
             // App Version
             const Text(
-              'Version 1.9.5',
+              'Version 2.2.0',
               style: TextStyle(fontSize: 16, color: Colors.grey),
             ),
-            
+
             const SizedBox(height: 8),
-            
+
             // Tagline
             const Text(
               'Fast, Unlimited, Safe and Free',
-              style: TextStyle(fontSize: 16, fontStyle: FontStyle.italic, color: Colors.grey),
+              style: TextStyle(
+                fontSize: 16,
+                fontStyle: FontStyle.italic,
+                color: Colors.grey,
+              ),
               textAlign: TextAlign.center,
             ),
 
@@ -73,7 +74,7 @@ class AboutScreen extends StatelessWidget {
             ),
             const SizedBox(height: 4),
             const Text(
-              'Hossein Pira',
+              'Hossein Pira & hidedev16',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
             ),
 
@@ -144,15 +145,17 @@ class AboutScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                
+
                 const SizedBox(height: 12),
-                
+
                 // Privacy Policy Button
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton.icon(
                     onPressed: () {
-                      _launchUrl('https://github.com/code3-dev/ProxyCloud/blob/master/PRIVACY.md');
+                      _launchUrl(
+                        'https://github.com/code3-dev/ProxyCloud/blob/master/PRIVACY.md',
+                      );
                     },
                     icon: const Icon(Icons.privacy_tip_outlined),
                     label: const Text('Privacy Policy'),
@@ -166,15 +169,17 @@ class AboutScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                
+
                 const SizedBox(height: 12),
-                
+
                 // Terms of Service Button
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton.icon(
                     onPressed: () {
-                      _launchUrl('https://github.com/code3-dev/ProxyCloud/blob/master/TERMS.md');
+                      _launchUrl(
+                        'https://github.com/code3-dev/ProxyCloud/blob/master/TERMS.md',
+                      );
                     },
                     icon: const Icon(Icons.gavel_outlined),
                     label: const Text('Terms of Service'),

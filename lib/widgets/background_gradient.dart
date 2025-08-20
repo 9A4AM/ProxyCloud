@@ -13,10 +13,7 @@ class BackgroundGradient extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [
-            AppTheme.primaryDark,
-            AppTheme.secondaryDark,
-          ],
+          colors: [AppTheme.primaryDark, AppTheme.secondaryDark],
         ),
       ),
       child: child,

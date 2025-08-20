@@ -9,9 +9,9 @@ class ServerService {
   static const String defaultServerUrl =
       'https://raw.githubusercontent.com/darkvpnapp/CloudflarePlus/refs/heads/main/proxy';
 
-  Future<List<V2RayConfig>> fetchServers({String? customUrl}) async {
+  Future<List<V2RayConfig>> fetchServers({required String customUrl}) async {
     try {
-      final url = customUrl ?? defaultServerUrl;
+      final url = customUrl;
       final response = await http.get(Uri.parse(url));
 
       if (response.statusCode == 200) {

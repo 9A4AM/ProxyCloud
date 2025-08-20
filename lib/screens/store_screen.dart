@@ -71,13 +71,14 @@ class _StoreScreenState extends State<StoreScreen> {
 
   void _filterItems() {
     setState(() {
-      _filteredItems = _storeItems.where((item) {
-        final name = item['name'].toString().toLowerCase();
-        final dev = item['dev'].toString().toLowerCase();
-        final query = _searchQuery.toLowerCase();
-        
-        return name.contains(query) || dev.contains(query);
-      }).toList();
+      _filteredItems =
+          _storeItems.where((item) {
+            final name = item['name'].toString().toLowerCase();
+            final dev = item['dev'].toString().toLowerCase();
+            final query = _searchQuery.toLowerCase();
+
+            return name.contains(query) || dev.contains(query);
+          }).toList();
     });
   }
 
@@ -128,8 +129,6 @@ class _StoreScreenState extends State<StoreScreen> {
       ErrorSnackbar.show(context, 'Error: ${e.toString()}');
     }
   }
-
-
 
   Future<void> _launchTelegramUrl() async {
     final Uri url = Uri.parse('https://t.me/h3dev');
@@ -414,7 +413,7 @@ class _StoreScreenState extends State<StoreScreen> {
         backgroundColor: AppTheme.primaryGreen,
         mini: true,
         child: const Icon(Icons.contact_support, color: Colors.white),
-      )
+      ),
     );
   }
 }
